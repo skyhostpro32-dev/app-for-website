@@ -178,6 +178,8 @@ elif tool == "✨ Blur Object Tool":
 </style>
 
 <button id="apply">✨ Apply Blur</button>
+<button id="undo" class="btn undo">↩ Undo</button>
+<button id="download" class="btn download">⬇ Download</button>
 
     <br><br>
     <canvas id="c" style="border:1px solid #ccc;"></canvas>
@@ -262,7 +264,32 @@ elif tool == "✨ Blur Object Tool":
         img.src = canvas.toDataURL();
         pts = [];
     }
+ // UNDO
+    document.getElementById("undo").onclick = () => {
 
+    // Undo mask clicks first
+    if (pts.length > 0) {
+        pts.pop();
+        redraw();
+        return;
+    }
+
+    // Restore previous image state
+    if (history.length > 0) {
+        let prevImage = history.pop();
+        ctx.putImageData(prevImage, 0, 0);
+
+        // ALSO update img so redraw works
+        img.src = canvas.toDataURL();
+    }
+};
+  // DOWNLOAD
+    document.getElementById("download").onclick = () => {
+        let link = document.createElement("a");
+        link.download = "result.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    }
     </script>
     </body></html>
     """, height=700)
