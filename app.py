@@ -203,17 +203,221 @@ elif tool == "✨ Blur Object Tool":
 # =========================
 # ERASER TOOL
 # =========================
+# =========================
+# 🖌 MANUAL OBJECT ERASER (FINAL WORKING)
+# =========================
 elif tool == "🖌 Manual Object Eraser":
 
-    st.subheader("🖌 Smart Object Eraser")
+    st.subheader("      🖌 Smart Object Eraser (Natural Fill)")
 
     components.html("""
-    <html><body style="text-align:center;">
-    <input type="file"><br><br>
-    <canvas style="border:1px solid #ccc;"></canvas>
-    </body></html>
-    """, height=600)
+    <html>
+    <body style="text-align:center; font-family:Arial;">
 
+    <h3>Upload → Click → Remove Object</h3>
+
+    <input type="file" id="upload"><br><br>
+
+    Brush Size:
+    <input type="range" id="brush" min="10" max="80" value="30"><br><br>
+    <style>
+.btn {
+    border: none;
+    padding: 12px 28px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 5px;
+    color: white;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.apply {
+    background-color: #4CAF50;
+}
+
+.apply:hover {
+    background-color: #43a047;
+}
+
+.undo {
+    background-color: #f39c12;
+}
+
+.undo:hover {
+    background-color: #e67e22;
+}
+
+.download {
+    background-color: #3498db;
+}
+
+.download:hover {
+    background-color: #2980b9;
+}
+</style>
+
+<button id="apply" class="btn apply">✨ Apply</button>
+<button id="undo" class="btn undo">↩ Undo</button>
+<button id="download" class="btn download">⬇ Download</button>
+   
+
+    <br><br>
+    <canvas id="c" style="border:1px solid #ccc;"></canvas>
+
+    <script>
+    const canvas = document.getElementById("c");
+    const ctx = canvas.getContext("2d");
+
+    let img = new Image();
+    let pts = [];
+
+    // LOAD IMAGE
+    document.getElementById("upload").onchange = e => {
+        img.src = URL.createObjectURL(e.target.files[0]);
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            // Fit screen
+            let scale = Math.min(window.innerWidth/img.width, 0.8);
+            canvas.style.width = img.width * scale + "px";
+            canvas.style.height = img.height * scale + "px";
+        }
+    }
+
+    // CLICK MASK
+    canvas.onclick = e => {
+        const r = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / r.width;
+        const scaleY = canvas.height / r.height;
+
+        const x = (e.clientX - r.left) * scaleX;
+        const y = (e.clientY - r.top) * scaleY;
+
+        const size = parseInt(document.getElementById("brush").value);
+
+        pts.push({x, y, size});
+        redraw();
+    }
+
+    function redraw() {
+        ctx.drawImage(img, 0, 0);
+        pts.forEach(p => {
+            ctx.fillStyle = "rgba(255,0,0,0.3)";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    // UNDO
+    document.getElementById("undo").onclick = () => {
+
+    // Undo mask clicks first
+    if (pts.length > 0) {
+        pts.pop();
+        redraw();
+        return;
+    }
+
+    // Restore previous image state
+    if (history.length > 0) {
+        let prevImage = history.pop();
+        ctx.putImageData(prevImage, 0, 0);
+
+        // ALSO update img so redraw works
+        img.src = canvas.toDataURL();
+    }
+};
+    // 🚀 APPLY (REAL INPAINT)
+    document.getElementById("apply").onclick = () => {
+
+        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let data = imageData.data;
+
+        let mask = new Uint8Array(canvas.width * canvas.height);
+
+        // CREATE MASK
+        pts.forEach(p => {
+            for (let y = -p.size; y <= p.size; y++) {
+                for (let x = -p.size; x <= p.size; x++) {
+
+                    let dist = Math.sqrt(x*x + y*y);
+                    if (dist > p.size) continue;
+
+                    let sx = Math.floor(p.x + x);
+                    let sy = Math.floor(p.y + y);
+
+                    if (sx>=0 && sy>=0 && sx<canvas.width && sy<canvas.height) {
+                        mask[sy * canvas.width + sx] = 1;
+                    }
+                }
+            }
+        });
+
+        // 🔥 STRONG FILL (MULTI-PASS)
+        for (let iter = 0; iter < 15; iter++) {
+
+            for (let y = 1; y < canvas.height-1; y++) {
+                for (let x = 1; x < canvas.width-1; x++) {
+
+                    let idx = y * canvas.width + x;
+
+                    if (mask[idx] === 1) {
+
+                        let sumR=0,sumG=0,sumB=0,count=0;
+
+                        for (let dy=-2; dy<=2; dy++) {
+                            for (let dx=-2; dx<=2; dx++) {
+
+                                let nx = x+dx;
+                                let ny = y+dy;
+                                let nidx = ny * canvas.width + nx;
+
+                                if (mask[nidx] === 0) {
+                                    let i2 = nidx * 4;
+                                    sumR += data[i2];
+                                    sumG += data[i2+1];
+                                    sumB += data[i2+2];
+                                    count++;
+                                }
+                            }
+                        }
+
+                        if (count > 0) {
+                            let i4 = idx * 4;
+                            data[i4]     = sumR / count;
+                            data[i4 + 1] = sumG / count;
+                            data[i4 + 2] = sumB / count;
+                            mask[idx] = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+
+        // ✅ SAVE RESULT (CRITICAL FIX)
+        img.src = canvas.toDataURL();
+        pts = [];
+    }
+
+    // DOWNLOAD
+    document.getElementById("download").onclick = () => {
+        let link = document.createElement("a");
+        link.download = "result.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+
+    </script>
+    </body>
+    </html>
+    """, height=800)
 # =========================
 # DEFAULT
 # =========================
