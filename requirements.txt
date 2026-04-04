@@ -1,0 +1,7 @@
+streamlit
+pillow
+numpy
+opencv-python-headless
+rembg
+onnxruntime
+streamlit-drawable-canvas==0.9.3
