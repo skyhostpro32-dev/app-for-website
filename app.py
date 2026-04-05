@@ -169,40 +169,6 @@ tool = st.selectbox(
     ]
 )
 # =========================
-# 🧰 TOOL BUTTON GRID
-# =========================
-
-st.markdown("<h3 style='text-align:center;'>Choose Tool</h3>", unsafe_allow_html=True)
-
-# Row 1
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("🎨 Background Change"):
-        st.session_state.tool = "bg"
-
-with col2:
-    if st.button("✨ Enhance Image"):
-        st.session_state.tool = "enhance"
-
-with col3:
-    if st.button("🧍 Auto Remove"):
-        st.session_state.tool = "person"
-
-# Row 2
-col4, col5, col6 = st.columns(3)
-
-with col4:
-    if st.button("🌄 Remove BG"):
-        st.session_state.tool = "remove_bg"
-
-with col5:
-    if st.button("✨ Blur Tool"):
-        st.session_state.tool = "blur"
-
-with col6:
-    if st.button("🖌 Eraser Tool"):
-        st.session_state.tool = "eraser"
 # =========================
 # NORMAL TOOLS
 # =========================
