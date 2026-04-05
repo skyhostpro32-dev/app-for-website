@@ -16,6 +16,59 @@ st.set_page_config(
     page_icon=favicon,  # 👈 YOUR ICON HERE
     layout="wide"
 )
+# =========================
+# 🔷 TOP NAV HEADER (BLUE)
+# =========================
+st.markdown("""
+<style>
+
+/* TOP HEADER */
+.top-header {
+    background: linear-gradient(90deg, #1565C0, #42A5F5);
+    padding: 18px 30px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* TITLE */
+.top-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: white;
+}
+
+/* NAV LINKS */
+.top-nav {
+    display: flex;
+    gap: 25px;
+    font-size: 16px;
+    color: white;
+}
+
+.top-nav span {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.top-nav span:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+</style>
+
+<div class="top-header">
+    <div class="top-title">✨ AI Image Studio</div>
+    <div class="top-nav">
+        <span>Home</span>
+        <span>Features</span>
+        <span>Tools</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # =========================
 # 🎨 GLOBAL CSS
