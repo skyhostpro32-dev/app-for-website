@@ -142,8 +142,7 @@ section[data-testid="stSidebar"] .stFileUploader {
 # =========================
 # 🖼 LOGO + TITLE (PRO LOOK)
 # =========================
-st.image("logo.png", width=180)
-st.title("✨ AI Image Dashboard")
+st.title("✨ AI Image Studio")
 
 # =========================
 # SIDEBAR
