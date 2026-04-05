@@ -57,7 +57,32 @@ st.markdown("""
     opacity: 1;
     text-decoration: underline;
 }
+/* CENTER EVERYTHING */
+.main > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
+/* CENTER IMAGE */
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 12px;
+}
+
+/* CENTER UPLOADER + SELECT */
+.stFileUploader, .stSelectbox {
+    width: 60% !important;
+    margin: auto;
+}
+
+/* CENTER BUTTONS */
+.stButton > button {
+    display: block;
+    margin: 10px auto;
+}
 </style>
 
 <div class="top-header">
