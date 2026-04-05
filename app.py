@@ -12,7 +12,7 @@ import streamlit.components.v1 as components
 favicon = Image.open("favicon.png")
 
 st.set_page_config(
-    page_title="AI Image Dashboard",
+    page_title="AI Image Stusio",
     page_icon=favicon,  # 👈 YOUR ICON HERE
     layout="wide"
 )
