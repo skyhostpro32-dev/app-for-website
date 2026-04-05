@@ -12,6 +12,7 @@ favicon = Image.open("favicon.png")
 
 st.set_page_config(
     page_title="AI Image Dashboard",
+    page_icon=favicon,
     layout="wide"
 )
 #=======================
