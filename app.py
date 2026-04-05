@@ -6,17 +6,7 @@ import cv2
 from rembg import remove
 import streamlit.components.v1 as components
 
-# =========================
-# ✅ FAVICON (REPLACE STREAMLIT LOGO)
-# =========================
-favicon = Image.open("favicon.png")
-
-st.set_page_config(
-    page_title="AI Image Stusio",
-    page_icon=favicon,  # 👈 YOUR ICON HERE
-    layout="wide"
-)
-# =========================
+#=======================
 # 🔷 TOP NAV HEADER (BLUE)
 # =========================
 st.markdown("""
