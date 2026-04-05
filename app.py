@@ -145,16 +145,20 @@ section[data-testid="stSidebar"] .stFileUploader {
 st.title("✨ AI Image Studio")
 
 # =========================
-# SIDEBAR
 # =========================
-st.sidebar.title("🧰 Tools")
+# 📤 CENTER UPLOAD SECTION
+# =========================
+st.markdown("<h3 style='text-align:center;'>Upload Your Image</h3>", unsafe_allow_html=True)
 
-uploaded_file = st.sidebar.file_uploader(
-    "📤 Upload Image", type=["png", "jpg", "jpeg"]
+uploaded_file = st.file_uploader(
+    "📤 Drag & Drop or Click to Upload",
+    type=["png", "jpg", "jpeg"],
+    label_visibility="collapsed"
 )
 
-tool = st.sidebar.radio(
-    "Select Tool",
+# Center tool selector below upload
+tool = st.selectbox(
+    "🧰 Select Tool",
     [
         "🎨 Background Change",
         "✨ Enhance Image",
@@ -164,7 +168,6 @@ tool = st.sidebar.radio(
         "🖌 Manual Object Eraser"
     ]
 )
-
 # =========================
 # NORMAL TOOLS
 # =========================
