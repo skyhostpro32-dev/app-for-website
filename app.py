@@ -5,7 +5,16 @@ import io
 import cv2
 from rembg import remove
 import streamlit.components.v1 as components
+# =========================
+# PAGE CONFIG
+# =========================
+favicon = Image.open("favicon.png")
 
+st.set_page_config(
+    page_title="AI Image Dashboard",
+    page_icon=favicon,
+    layout="wide"
+)
 #=======================
 # 🔷 TOP NAV HEADER (BLUE)
 # =========================
